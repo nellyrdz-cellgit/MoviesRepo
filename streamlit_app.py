@@ -8,7 +8,7 @@ from google.oauth2 import service_account
 import json
 key_dict = json.loads(st.secrets["textkey"])
 creds = service_account.Credentials.from_service_account_info(key_dict)
-db = firestore.Client(credentials=creds, project="movies-project")
+db = firestore.Client(credentials=creds, project="movies")
 dbMovies = db.collection('movies')
 
 # Titulo
@@ -34,24 +34,44 @@ if name and filemcompany and director and genre and submit:
   })
   st.sidebar.write('Película agregada')
 
-#Busca por nombre
-def loadByName(name):
-  movies_ref = dbMovies.where(u'name', u'==', name)
-  currentName = None
-  for myname in movies_ref.stream():
-    currentName = myname
-  return currentName
+# Función obtener directores únicos
+def getDirectors():
+    docs = dbMovies.stream()
+    directors = set()
+    for doc in docs:
+        data = doc.to_dict()
+        if "director" in data:
+            directors.add(data["director"])
+    return sorted(list(directors))
 
-st.sidebar.subheader("Buscar nombre de película")
-nameSearch = st.sidebar.text_input("Nombre")
+# Función buscar por director
+def loadByDirector(director):
+    movies_ref = dbMovies.where(u'director', u'==', director).stream()
+    return list(movies_ref)
+
+# Sidebar - Buscar por Director
+st.sidebar.subheader("Buscar películas por Director")
+
+directors_list = getDirectors()
+
+if directors_list:
+    DirectorSearch = st.sidebar.selectbox("Director", directors_list)
+else:
+    DirectorSearch = None
+    st.sidebar.write("No hay directores registrados")
+
 btnFiltrar = st.sidebar.button("Filtrar")
 
-if (btnFiltrar):
-  doc = loadByName(nameSearch)
-  if doc is None:
-    st.sidebar.write("La película no existe en nuestra base de datos")
-  else:
-    st.sidebar.write(doc.to_dict())
+if btnFiltrar and DirectorSearch:
+    docs = loadByDirector(DirectorSearch)
+
+    if len(docs) == 0:
+        st.sidebar.write("No existen películas del director en la base de datos")
+    else:
+        st.sidebar.write(f"Películas de {DirectorSearch}:")
+        for doc in docs:
+            st.sidebar.write(doc.to_dict())
+
 
 #Eliminar
 st.sidebar.markdown("---'")
@@ -67,7 +87,7 @@ if (btnEliminar):
 
 st.sidebar.markdown("---'")
 
-#Modificar 
+#Modificar
 newname = st.sidebar.text_input("Modificar nombre")
 btnModificar = st.sidebar.button("Modificar")
 
@@ -82,9 +102,16 @@ if btnModificar:
     })
 
 
-#Listado de peliculas
-movies_ref = list(db.collection(u'movies').stream())
+# Listado  de películas
+st.markdown("---")
+st.subheader("Listado completo de películas")
+
+movies_ref = list(dbMovies.stream())
 movies_dict = list(map(lambda x: x.to_dict(), movies_ref))
-movies_dataframe = pd.DataFrame(movies_dict)
-st.dataframe(movies_dataframe)
+
+if len(movies_dict) > 0:
+    movies_dataframe = pd.DataFrame(movies_dict)
+    st.dataframe(movies_dataframe)
+else:
+    st.write("No hay películas registradas")
 
