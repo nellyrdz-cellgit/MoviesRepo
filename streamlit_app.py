@@ -7,10 +7,29 @@ from google.oauth2 import service_account
 
 import json
 
-key_dict = json.loads(st.secrets["textkey"])
+
+#--
+key_dict = dict(st.secrets)
 creds = service_account.Credentials.from_service_account_info(key_dict)
-db = firestore.Client(credentials=creds, project="movies-199f4")
-dbMovies = db.collection('movies')
+db = firestore.Client(credentials=creds, project=st.secrets["movies-199f4"])
+dbMovies = db.collection("movies")
+#--
+
+#--
+#key_dict = st.secrets["gcp_service_account"]
+
+#creds = service_account.Credentials.from_service_account_info(key_dict)
+
+#db = firestore.Client(
+#    credentials=creds,
+#    project=key_dict["movies-199f4"]
+#)
+
+#--
+#key_dict = json.loads(st.secrets["textkey"])
+#creds = service_account.Credentials.from_service_account_info(key_dict)
+#db = firestore.Client(credentials=creds, project="movies-199f4")
+#dbMovies = db.collection('movies')
 
 # Titulo
 st.title("Lista de Películas")
