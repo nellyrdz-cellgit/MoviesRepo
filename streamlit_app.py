@@ -7,9 +7,8 @@ from google.oauth2 import service_account
 
 import json
 
-st.write(st.secrets)
 
-#--
+#--Trae llaves pra base de datos de secrets
 key_dict = json.loads(st.secrets["textkey"])
 creds = service_account.Credentials.from_service_account_info(key_dict)
 db = firestore.Client(credentials=creds, project="movies-199f4")
