@@ -17,7 +17,7 @@ dbMovies = db.collection("movies")
 #    data = [doc.to_dict() for doc in docs]
 #    return pd.DataFrame(data)
 
-@st.cache_data(ttl=600)
+@st.cache_data(ttl=600)  #ponemos esto para agilizar
 def load_movies():
     docs = dbMovies.get()
     data = [doc.to_dict() for doc in docs]
