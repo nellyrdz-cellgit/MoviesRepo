@@ -64,10 +64,10 @@ genre = st.sidebar.text_input("Género")
 submit = st.sidebar.button("Crear nueva película")
 
 if submit:
-    if name and filmcompany and director and genre:
+    if name and filemcompany and director and genre:
         new_movie = {
             "name": name,
-            "filmcompany": filmcompany,
+            "filemcompany": filemcompany,
             "director": director,
             "genre": genre
         }
