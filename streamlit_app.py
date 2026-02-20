@@ -26,10 +26,25 @@ st.title("Lista de Películas")
 st.sidebar.header("Visualización")
 show_all = st.sidebar.checkbox("Mostrar todos los filmes")
 
-st.sidebar.header("Buscar por título de filme")
+# ---- Buscar por título ----
+st.sidebar.header("Buscar por título")
 title_search = st.sidebar.text_input("Título del filme")
 search_btn = st.sidebar.button("Buscar")
 
+# ---- Filtro por director ----
+st.sidebar.header("Filtrar por director")
+
+if "director" in movies_df.columns and not movies_df.empty:
+    directors_list = sorted(movies_df["director"].dropna().unique())
+    selected_director = st.sidebar.selectbox(
+        "Selecciona un director", 
+        ["-- Seleccionar --"] + list(directors_list)
+    )
+else:
+    selected_director = None
+    st.sidebar.write("No hay directores disponibles")
+
+# ---- Crear nueva película ----
 st.sidebar.markdown("------------------------------")
 st.sidebar.header("Nueva película")
 
@@ -58,29 +73,6 @@ if submit:
 st.markdown("------------------------------")
 st.subheader("Listado de películas")
 
+# 1️⃣ Mostrar todos
 if show_all:
     if not movies_df.empty:
-        st.dataframe(movies_df, use_container_width=True)
-    else:
-        st.write("No hay películas registradas")
-
-elif search_btn and title_search:
-    if "name" in movies_df.columns:
-        filtered_df = movies_df[
-            movies_df["name"].str.contains(title_search, case=False, na=False)
-        ]
-
-        if not filtered_df.empty:
-            st.subheader("Resultados de búsqueda")
-            st.dataframe(filtered_df, use_container_width=True)
-        else:
-            st.warning("No se encontraron películas con ese título")
-    else:
-        st.warning("La base de datos no contiene la columna 'name'")
-
-else:
-    # Vista por defecto
-    if not movies_df.empty:
-        st.dataframe(movies_df, use_container_width=True)
-    else:
-        st.write("No hay películas registradas")
