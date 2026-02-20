@@ -11,9 +11,15 @@ db = firestore.Client(credentials=creds, project="movies-199f4")
 dbMovies = db.collection("movies")
 
 # ---------------- CARGAR DATASET BASE ----------------
-@st.cache_data
+#@st.cache_data
+#def load_movies():
+#    docs = dbMovies.stream()
+#    data = [doc.to_dict() for doc in docs]
+#    return pd.DataFrame(data)
+
+@st.cache_data(ttl=600)
 def load_movies():
-    docs = dbMovies.stream()
+    docs = dbMovies.get()
     data = [doc.to_dict() for doc in docs]
     return pd.DataFrame(data)
 
@@ -75,7 +81,7 @@ if submit:
         st.sidebar.success("Película agregada correctamente")
     else:
         st.sidebar.warning("Completa todos los campos")
-        
+
 
 # ---------------- MOSTRAR RESULTADOS ----------------
 st.markdown("------------------------------")
