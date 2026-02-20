@@ -40,8 +40,10 @@ if "director" in movies_df.columns and not movies_df.empty:
         "Selecciona un director", 
         ["-- Seleccionar --"] + list(directors_list)
     )
+    search_director_btn = st.sidebar.button("Buscar por director")
 else:
     selected_director = None
+    search_director_btn = False
     st.sidebar.write("No hay directores disponibles")
 
 # ---- Crear nueva película ----
@@ -49,17 +51,17 @@ st.sidebar.markdown("------------------------------")
 st.sidebar.header("Nueva película")
 
 name = st.sidebar.text_input("Nombre de la película")
-filmcompany = st.sidebar.text_input("Compañía Cinematográfica")
+filemcompany = st.sidebar.text_input("Compañía Cinematográfica")
 director = st.sidebar.text_input("Director")
 genre = st.sidebar.text_input("Género")
 
 submit = st.sidebar.button("Crear nueva película")
 
 if submit:
-    if name and filmcompany and director and genre:
+    if name and filemcompany and director and genre:
         dbMovies.add({
             "name": name,
-            "filmcompany": filmcompany,
+            "filemcompany": filemcompany,
             "director": director,
             "genre": genre
         })
@@ -94,7 +96,7 @@ elif search_btn and title_search:
             st.warning("No se encontraron películas con ese título")
 
 # Filtrar por director
-elif selected_director and selected_director != "-- Seleccionar --":
+elif search_director_btn and selected_director != "-- Seleccionar --":
     filtered_df = movies_df[movies_df["director"] == selected_director]
 
     if not filtered_df.empty:
