@@ -73,6 +73,39 @@ if submit:
 st.markdown("------------------------------")
 st.subheader("Listado de películas")
 
-# 1️⃣ Mostrar todos
+# Mostrar todos
 if show_all:
     if not movies_df.empty:
+        st.dataframe(movies_df, use_container_width=True)
+    else:
+        st.write("No hay películas registradas")
+
+# Buscar por título
+elif search_btn and title_search:
+    if "name" in movies_df.columns:
+        filtered_df = movies_df[
+            movies_df["name"].str.contains(title_search, case=False, na=False)
+        ]
+
+        if not filtered_df.empty:
+            st.subheader("Resultados por título")
+            st.dataframe(filtered_df, use_container_width=True)
+        else:
+            st.warning("No se encontraron películas con ese título")
+
+# Filtrar por director
+elif selected_director and selected_director != "-- Seleccionar --":
+    filtered_df = movies_df[movies_df["director"] == selected_director]
+
+    if not filtered_df.empty:
+        st.subheader(f"Películas de {selected_director}")
+        st.dataframe(filtered_df, use_container_width=True)
+    else:
+        st.warning("No hay películas para ese director")
+
+# Vista por defecto
+else:
+    if not movies_df.empty:
+        st.dataframe(movies_df, use_container_width=True)
+    else:
+        st.write("No hay películas registradas")
