@@ -65,15 +65,29 @@ else:
 
 btnFiltrar = st.sidebar.button("Filtrar")
 
+#--
+#if btnFiltrar and DirectorSearch:
+#    docs = loadByDirector(DirectorSearch)
+#
+#    if len(docs) == 0:
+#        st.sidebar.write("No existen películas del director en la base de datos")
+#    else:
+#        st.sidebar.write(f"Películas de {DirectorSearch}:")
+#        for doc in docs:
+#            st.sidebar.write(doc.to_dict())
+#---
+
+filtered_movies = []
+
 if btnFiltrar and DirectorSearch:
+
     docs = loadByDirector(DirectorSearch)
 
     if len(docs) == 0:
-        st.sidebar.write("No existen películas del director en la base de datos")
+        st.warning("No existen películas del director en la base de datos")
     else:
-        st.sidebar.write(f"Películas de {DirectorSearch}:")
         for doc in docs:
-            st.sidebar.write(doc.to_dict())
+            filtered_movies.append(doc.to_dict())
 
 
 #Eliminar
@@ -105,16 +119,31 @@ if btnModificar:
     })
 
 
-# Listado  de películas
+## Listado  de películas
+#st.markdown("______________________________")
+#st.subheader("Listado completo de películas")
+#
+#movies_ref = list(dbMovies.stream())
+#movies_dict = list(map(lambda x: x.to_dict(), movies_ref))
+#
+#if len(movies_dict) > 0:
+#    movies_dataframe = pd.DataFrame(movies_dict)
+#    st.dataframe(movies_dataframe)
+#else:
+#    st.write("No hay películas registradas")
+
 st.markdown("______________________________")
-st.subheader("Listado completo de películas")
+st.subheader("Listado de películas")
 
-movies_ref = list(dbMovies.stream())
-movies_dict = list(map(lambda x: x.to_dict(), movies_ref))
-
-if len(movies_dict) > 0:
+if btnFiltrar and DirectorSearch and len(filtered_movies) > 0:
+    movies_dataframe = pd.DataFrame(filtered_movies)
+else:
+    movies_ref = list(dbMovies.stream())
+    movies_dict = list(map(lambda x: x.to_dict(), movies_ref))
     movies_dataframe = pd.DataFrame(movies_dict)
-    st.dataframe(movies_dataframe)
+
+if not movies_dataframe.empty:
+    st.dataframe(movies_dataframe, use_container_width=True)
 else:
     st.write("No hay películas registradas")
-
+    
