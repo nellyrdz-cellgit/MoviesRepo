@@ -58,18 +58,24 @@ genre = st.sidebar.text_input("Género")
 submit = st.sidebar.button("Crear nueva película")
 
 if submit:
-    if name and filemcompany and director and genre:
-        dbMovies.add({
+    if name and filmcompany and director and genre:
+        new_movie = {
             "name": name,
-            "filemcompany": filemcompany,
+            "filmcompany": filmcompany,
             "director": director,
             "genre": genre
-        })
+        }
+
+        # Guardar en Firestore
+        dbMovies.add(new_movie)
+
+        # Agregar al DataFrame en memoria
+        movies_df.loc[len(movies_df)] = new_movie
+
         st.sidebar.success("Película agregada correctamente")
-        st.cache_data.clear()
-        st.rerun()
     else:
         st.sidebar.warning("Completa todos los campos")
+        
 
 # ---------------- MOSTRAR RESULTADOS ----------------
 st.markdown("------------------------------")
