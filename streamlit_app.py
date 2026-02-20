@@ -64,10 +64,9 @@ if show_all:
 
 else: 
     if search_btn and title_search:
-    filtered_df = movies_df[
+      filtered_df = movies_df[
         movies_df["name"].str.contains(title_search, case=False, na=False)
-    ]
-
+      ]
     st.subheader("Resultados de búsqueda")
     st.dataframe(filtered_df)
 
