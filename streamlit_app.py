@@ -77,7 +77,7 @@ if btnFiltrar and DirectorSearch:
 
 
 #Eliminar
-st.sidebar.markdown("---'")
+st.sidebar.markdown("______________________________")
 btnEliminar = st.sidebar.button("Eliminar")
 
 if (btnEliminar):
@@ -88,7 +88,7 @@ if (btnEliminar):
     dbMovies.document(deletename.id).delete()
     st.sidebar.write("Película eliminada")
 
-st.sidebar.markdown("---'")
+st.sidebar.markdown("______________________________")
 
 #Modificar
 newname = st.sidebar.text_input("Modificar nombre")
@@ -106,7 +106,7 @@ if btnModificar:
 
 
 # Listado  de películas
-st.markdown("---")
+st.markdown("______________________________")
 st.subheader("Listado completo de películas")
 
 movies_ref = list(dbMovies.stream())
